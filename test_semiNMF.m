@@ -65,13 +65,6 @@ fprintf('Error ||X-WH||_F  = %2.2f.\n',...
 fprintf('std ||X-WH||_F  = %2.2f.\n',...
                    std(err_smf16)); 
 
-% 4) Semi-NMF with Quantization (6-bits)
-disp('**** Test semi-NMF on a quantized gaussian matrix 6-bits ****');
-fprintf('Error ||X-WH||_F= %2.2f.\n',...
-                   mean(err_smf6)); 
-fprintf('std ||X-WH||_F= %2.2f.\n',...
-                   std(err_smf6)); 
-
 % 4) Semi-NMF with Quantization (8-bits)
 disp('**** Test semi-NMF on a quantized gaussian matrix 8-bits ****');
 fprintf('Error ||X-WH||_F= %2.2f.\n',...
@@ -79,7 +72,14 @@ fprintf('Error ||X-WH||_F= %2.2f.\n',...
 fprintf('std ||X-WH||_F= %2.2f.\n',...
                    std(err_smf8)); 
 
-% 5) Semi-NMF with Quantization (4-bits)
+% 5) Semi-NMF with Quantization (6-bits)
+disp('**** Test semi-NMF on a quantized gaussian matrix 6-bits ****');
+fprintf('Error ||X-WH||_F= %2.2f.\n',...
+                   mean(err_smf6)); 
+fprintf('std ||X-WH||_F= %2.2f.\n',...
+                   std(err_smf6)); 
+
+% 6) Semi-NMF with Quantization (4-bits)
 disp('**** Test semi-NMF on a quantized gaussian matrix 4-bits ****');
 fprintf('Error ||X-WH||_F= %2.2f.\n',...
                    mean(err_smf4)); 
@@ -89,12 +89,35 @@ fprintf('std ||X-WH||_F= %2.2f.\n',...
 r_m = (1 - r*(2*m + n)/(2*m*n))*100;
 r_p = (1-r*(m+n)/(2*m*n))*100;
 
+%delta_svd = abs((mean(err_svd) - mean(err_smf32))/(mean(err_svd) + 1e-3));
+
+% Delta_SVD
+disp('**** Delta SVD ****');
+fprintf('deltaSVD for r= %2.2f.\n',...
+                   r); 
+disp(delta_svd(err_svd, err_svd));
+disp(delta_svd(err_smf32, err_svd));
+disp(delta_svd(err_smf16, err_svd));
+disp(delta_svd(err_smf8, err_svd));
+disp(delta_svd(err_smf6, err_svd));
+disp(delta_svd(err_smf4, err_svd));
+
+disp('absolute errors')
+disp(mean(err_svd));
+disp(mean(err_smf32));
+disp(mean(err_smf16));
+disp(mean(err_smf8));
+disp(mean(err_smf6));
+disp(mean(err_smf4));
+
 % R_m and R_p
 disp('**** Savings on number of memristors and parameters ****');
 fprintf('R_m for r= %2.2f.\n is %2.2f.\n',...
-                   r_m, r); 
+                   r, r_m); 
 fprintf('R_p for r= %2.2f.\n is %2.2f.\n',...
-                   r_p, r);
+                   r, r_p);
+
+
 %Plots
 %Error plot
 figure
@@ -116,3 +139,7 @@ figure
 bar([16, 32, 64, 128], [92.19, 84.38, 68.75, 37.50])
 xlabel('k')
 ylabel('R_m')
+
+function delta = delta_svd(F, err_svd); 
+delta = abs((mean(err_svd) - mean(F))/(mean(err_svd) + 1e-3));
+end

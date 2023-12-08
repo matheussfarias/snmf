@@ -7,3 +7,7 @@ x_floor = int32(floor(x_shifted_scaled +.5));
 x_back = single(x_floor)*high/(2^b -1);
 X = x_back + low;
 end
+
+function delta = delta_svd(F, err_svd); 
+delta = abs((mean(err_svd) - mean(F))/(mean(err_svd) + 1e-3));
+end
